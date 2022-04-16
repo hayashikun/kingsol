@@ -1,2 +1,2 @@
-pub mod index_handler;
-pub mod link_handler;
+pub(crate) mod action_handler;
+pub(crate) mod link_handler;

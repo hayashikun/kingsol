@@ -1,13 +1,18 @@
 use actix_web::{App, HttpServer, web};
 use anyhow::{Context, Result};
 
-use crate::handler::{index_handler, link_handler};
+use crate::handler::{action_handler, link_handler};
+use crate::redis::create_connection_pool;
 
 #[actix_web::main]
 pub async fn start() -> Result<()> {
-    let server = HttpServer::new(|| {
+    let redis_pool = create_connection_pool("redis://localhost:6379").unwrap();
+
+    let server = HttpServer::new(move || {
         App::new()
-            .route("/", web::get().to(index_handler::index))
+            .app_data(web::Data::new(redis_pool.clone()))
+            .service(action_handler::add)
+            .service(action_handler::list)
             .default_service(web::get().to(link_handler::link))
     });
     println!("Running server on http://localhost:8080");
