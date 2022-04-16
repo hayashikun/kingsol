@@ -8,3 +8,10 @@ edition = "2021"
 [dependencies]
 actix-web = "4"
 redis = "0.21.5"
+
+[lib]
+doc = false
+
+[[bin]]
+name = "server"
+path = "src/bin/server.rs"
