@@ -6,7 +6,11 @@ services:
       - "8080:8080"
     volumes:
       - ".:/app"
+    links:
+      - redis
   redis:
     image: "redis:alpine"
+    volumes:
+      - "./data:/data"
     ports:
       - "6379:6379"
