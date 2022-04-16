@@ -7,7 +7,9 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4"
-redis = "0.21.5"
+anyhow = "1"
+redis = { version = "0.21", features = ["r2d2"] }
+r2d2 = "0.8"
 
 [lib]
 doc = false
