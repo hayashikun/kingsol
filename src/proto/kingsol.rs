@@ -1,42 +1,49 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Link {
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub key: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
+    #[prost(string, tag = "2")]
     pub link: ::prost::alloc::string::String,
 }
+
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetRequest {
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub key: ::prost::alloc::string::String,
 }
+
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetResponse {
-    #[prost(message, optional, tag="1")]
+    #[prost(message, optional, tag = "1")]
     pub link: ::core::option::Option<Link>,
 }
+
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ListRequest {
-}
+pub struct ListRequest {}
+
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListResponse {
-    #[prost(message, repeated, tag="1")]
+    #[prost(message, repeated, tag = "1")]
     pub links: ::prost::alloc::vec::Vec<Link>,
 }
+
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateRequest {
-    #[prost(message, optional, tag="1")]
+    #[prost(message, optional, tag = "1")]
     pub link: ::core::option::Option<Link>,
-    #[prost(bool, tag="2")]
+    #[prost(bool, tag = "2")]
     pub r#override: bool,
 }
+
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CreateResponse {
-}
+pub struct CreateResponse {}
+
 /// Generated server implementations.
 pub mod kingsol_api_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
+
     use tonic::codegen::*;
+
     ///Generated trait containing gRPC methods that should be implemented for use with KingsolApiServer.
     #[async_trait]
     pub trait KingsolApi: Send + Sync + 'static {
@@ -53,13 +60,16 @@ pub mod kingsol_api_server {
             request: tonic::Request<super::CreateRequest>,
         ) -> Result<tonic::Response<super::CreateResponse>, tonic::Status>;
     }
+
     #[derive(Debug)]
     pub struct KingsolApiServer<T: KingsolApi> {
         inner: _Inner<T>,
         accept_compression_encodings: (),
         send_compression_encodings: (),
     }
+
     struct _Inner<T>(Arc<T>);
+
     impl<T: KingsolApi> KingsolApiServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
@@ -76,17 +86,18 @@ pub mod kingsol_api_server {
             inner: T,
             interceptor: F,
         ) -> InterceptedService<Self, F>
-        where
-            F: tonic::service::Interceptor,
+            where
+                F: tonic::service::Interceptor,
         {
             InterceptedService::new(Self::new(inner), interceptor)
         }
     }
+
     impl<T, B> tonic::codegen::Service<http::Request<B>> for KingsolApiServer<T>
-    where
-        T: KingsolApi,
-        B: Body + Send + 'static,
-        B::Error: Into<StdError> + Send + 'static,
+        where
+            T: KingsolApi,
+            B: Body + Send + 'static,
+            B::Error: Into<StdError> + Send + 'static,
     {
         type Response = http::Response<tonic::body::BoxBody>;
         type Error = std::convert::Infallible;
@@ -223,6 +234,7 @@ pub mod kingsol_api_server {
             }
         }
     }
+
     impl<T: KingsolApi> Clone for KingsolApiServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
@@ -233,16 +245,19 @@ pub mod kingsol_api_server {
             }
         }
     }
+
     impl<T: KingsolApi> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(self.0.clone())
         }
     }
+
     impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "{:?}", self.0)
         }
     }
+
     impl<T: KingsolApi> tonic::transport::NamedService for KingsolApiServer<T> {
         const NAME: &'static str = "kingsol.KingsolAPI";
     }
