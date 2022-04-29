@@ -1,5 +1,6 @@
 extern crate actix_web;
 
 pub mod web;
+pub mod grpc;
 pub mod redis;
-mod proto;
+pub mod proto;

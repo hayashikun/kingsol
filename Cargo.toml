@@ -12,7 +12,9 @@ anyhow = "1"
 redis = { version = "0.21", features = ["r2d2"] }
 r2d2 = "0.8"
 prost = "0.10"
+tokio = { version = "1.18.0", features = ["rt-multi-thread"] }
 tonic = "0.7.1"
+tonic-web = "0.3.0"
 
 [build-dependencies]
 tonic-build = "0.7.1"
@@ -23,3 +25,7 @@ doc = false
 [[bin]]
 name = "web"
 path = "src/bin/web.rs"
+
+[[bin]]
+name = "grpc-web"
+path = "src/bin/grpc_web.rs"
