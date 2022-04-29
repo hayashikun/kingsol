@@ -17,7 +17,7 @@ fn do_link(req: HttpRequest, pool: web::Data<Pool<Client>>) -> Result<HttpRespon
     }
 }
 
-pub async fn link(req: HttpRequest, pool: web::Data<Pool<Client>>) -> HttpResponse {
+pub async fn link_handler(req: HttpRequest, pool: web::Data<Pool<Client>>) -> HttpResponse {
     match do_link(req, pool) {
         Ok(r) => r,
         Err(e) => HttpResponse::InternalServerError().body(e.to_string())
