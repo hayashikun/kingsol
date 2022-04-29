@@ -1,21 +1,27 @@
-use tonic::{Request, Response, Status, transport::Server};
+use tonic::transport::Server;
 
 use kingsol::grpc::API;
-use kingsol::proto::kingsol::kingsol_api_server::KingsolApiServer;
+use kingsol::kingsol_api::kingsol_api_server::KingsolApiServer;
+use kingsol::redis::create_connection_pool;
 
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let addr = "0.0.0.0:8081".parse().unwrap();
+    let redis_pool = create_connection_pool("redis://localhost:6379").unwrap();
 
-    let api = KingsolApiServer::new(API::default());
-    let service = tonic_web::config()
+    let addr = "0.0.0.0:8081".parse().unwrap();
+    let api = API {
+        redis_pool
+    };
+    let api = KingsolApiServer::new(api);
+    let api = tonic_web::config()
         .allow_origins(vec!["127.0.0.1"])
         .enable(api);
 
     println!("GreeterServer listening on {}", addr);
 
     Server::builder()
-        .add_service(service)
+        .accept_http1(true)
+        .add_service(api)
         .serve(addr)
         .await?;
 
