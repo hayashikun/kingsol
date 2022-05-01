@@ -1,55 +1,139 @@
 <script lang="ts">
     import {KingsolAPIClient} from "./proto/Kingsol_apiServiceClientPb";
-    import {CreateRequest, Link, ListRequest} from "./proto/kingsol_api_pb";
+    import API from "./api";
+    import {Link} from "./proto/kingsol_api_pb";
 
-    export let name: string;
+    const client = new KingsolAPIClient("http://localhost:8081")
+    const api = new API(client);
 
-    function add() {
-        const client = new KingsolAPIClient("http://localhost:8081")
-        const link = new Link().setKey("tw").setUri("https://twitter.com/home")
-        const req = new CreateRequest().setLink(link)
-        client.create(req, null, (err, res) => {
-            console.log(err);
-            console.log(res);
-        })
+    let errorMessage: string | null = null;
+
+    let key = "";
+    let uri = "";
+    let overwrite = false;
+    let links: [Link] = [];
+
+    async function add() {
+        try {
+            await api.create(key, uri, overwrite)
+        } catch (e: Error) {
+            errorMessage = e.toString();
+        }
+        await list()
     }
 
-    function list() {
-        const client = new KingsolAPIClient("http://localhost:8081")
-        const req = new ListRequest()
-        client.list(req, null, (err, res) => {
-            console.log(err);
-            console.log(res);
-        })
+    async function list() {
+        links = await api.list()
     }
+
+    list()
 </script>
 
 <main>
-    <h1>Hello {name}!</h1>
-    <p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+    <h1>Kingsol</h1>
 
-    <button on:click={add}>Add</button>
-    <button on:click={list}>List</button>
+    <div class="message-container" class:error-visible={errorMessage != null}>
+        {errorMessage}
+    </div>
+
+    <div class="create-link-container">
+        <label for="key-input">Key
+            <input id="key-input" type="text" bind:value={key}>
+        </label>
+
+        <label for="uri-input">URI
+            <input id="uri-input" type="text" bind:value={uri}>
+        </label>
+
+        <label for="overwrite-input">Overwrite
+            <input id="overwrite-input" type="checkbox" bind:value={overwrite}>
+        </label>
+
+        <button on:click={add}>Add</button>
+    </div>
+
+    <ul class="link-ul">
+        {#each links as link}
+            <li>
+                <div class="link-key">{link.getKey()}</div>
+                <div class="link-uri">{link.getUri()}</div>
+            </li>
+        {/each}
+    </ul>
 </main>
 
 <style>
     main {
         text-align: center;
         padding: 1em;
-        max-width: 240px;
+        max-width: none;
         margin: 0 auto;
     }
 
     h1 {
-        color: #ff3e00;
-        text-transform: uppercase;
+        color: orangered;
         font-size: 4em;
-        font-weight: 100;
+        font-weight: lighter;
     }
 
-    @media (min-width: 640px) {
-        main {
-            max-width: none;
-        }
+    .message-container {
+        margin: 2em 4em;
+        padding: 1em;
+        display: none;
+    }
+
+    .error-visible {
+        color: red;
+        background: #ffe0e2;
+        display: block;
+    }
+
+    .create-link-container {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 40px;
+        margin-bottom: 40px;
+        border-bottom: solid 2px #AAAAAA;
+    }
+
+    #key-input {
+        width: 100px;
+    }
+
+    #uri-input {
+        width: 500px;
+    }
+
+    .create-link-container label {
+        margin: auto 0;
+    }
+
+    .create-link-container input {
+        margin: 0 1.6em 0 0.4em;
+    }
+
+    .create-link-container button {
+        margin: auto 0;
+    }
+
+    .link-ul {
+        font-size: 1.2em;
+        list-style: none;
+    }
+
+    .link-ul li {
+        display: flex;
+        justify-content: center;
+        margin-top: 4px;
+    }
+
+    .link-key {
+        margin-right: 2em;
+        width: 6em;
+    }
+
+    .link-uri {
+        width: 20em;
+        text-align: left;
     }
 </style>
