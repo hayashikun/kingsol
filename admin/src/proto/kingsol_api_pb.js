@@ -910,7 +910,7 @@ proto.kingsol_api.CreateRequest.prototype.toObject = function(opt_includeInstanc
 proto.kingsol_api.CreateRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     link: (f = msg.getLink()) && proto.kingsol_api.Link.toObject(includeInstance, f),
-    override: jspb.Message.getBooleanFieldWithDefault(msg, 2, false)
+    overwrite: jspb.Message.getBooleanFieldWithDefault(msg, 2, false)
   };
 
   if (includeInstance) {
@@ -954,7 +954,7 @@ proto.kingsol_api.CreateRequest.deserializeBinaryFromReader = function(msg, read
       break;
     case 2:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setOverride(value);
+      msg.setOverwrite(value);
       break;
     default:
       reader.skipField();
@@ -993,7 +993,7 @@ proto.kingsol_api.CreateRequest.serializeBinaryToWriter = function(message, writ
       proto.kingsol_api.Link.serializeBinaryToWriter
     );
   }
-  f = message.getOverride();
+  f = message.getOverwrite();
   if (f) {
     writer.writeBool(
       2,
@@ -1041,10 +1041,10 @@ proto.kingsol_api.CreateRequest.prototype.hasLink = function() {
 
 
 /**
- * optional bool override = 2;
+ * optional bool overwrite = 2;
  * @return {boolean}
  */
-proto.kingsol_api.CreateRequest.prototype.getOverride = function() {
+proto.kingsol_api.CreateRequest.prototype.getOverwrite = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
 };
 
@@ -1053,7 +1053,7 @@ proto.kingsol_api.CreateRequest.prototype.getOverride = function() {
  * @param {boolean} value
  * @return {!proto.kingsol_api.CreateRequest} returns this
  */
-proto.kingsol_api.CreateRequest.prototype.setOverride = function(value) {
+proto.kingsol_api.CreateRequest.prototype.setOverwrite = function(value) {
   return jspb.Message.setProto3BooleanField(this, 2, value);
 };
 

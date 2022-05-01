@@ -102,8 +102,8 @@ export class CreateRequest extends jspb.Message {
   hasLink(): boolean;
   clearLink(): CreateRequest;
 
-  getOverride(): boolean;
-  setOverride(value: boolean): CreateRequest;
+  getOverwrite(): boolean;
+  setOverwrite(value: boolean): CreateRequest;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateRequest.AsObject;
@@ -116,7 +116,7 @@ export class CreateRequest extends jspb.Message {
 export namespace CreateRequest {
   export type AsObject = {
     link?: Link.AsObject,
-    override: boolean,
+    overwrite: boolean,
   }
 }
 
