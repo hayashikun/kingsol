@@ -43,13 +43,21 @@ impl KingsolApi for API {
     }
 
     async fn create(&self, request: Request<CreateRequest>) -> Result<Response<CreateResponse>, Status> {
+        let overwrite = request.get_ref().overwrite;
         let link: Link = request.into_inner().link
             .ok_or(Status::invalid_argument("empty key or uri"))?;
         if link.key.is_empty() || link.uri.is_empty() {
-            return Err(Status::invalid_argument("empty key or uri"))
+            return Err(Status::invalid_argument("empty key or uri"));
         }
         let mut conn = get_connection(&self.redis_pool)
             .map_err(|e| Status::internal(e.to_string()))?;
+        if !overwrite {
+            let exists = conn.exists(format!("{}:{}", LINK_KEY_PREFIX, link.key))
+                .map_err(|e| Status::internal(e.to_string()))?;
+            if exists {
+                return Err(Status::already_exists(format!("{} exists", link.key)));
+            }
+        }
         conn.set(format!("{}:{}", LINK_KEY_PREFIX, link.key), link.uri)
             .map_err(|e| Status::internal(e.to_string()))?;
         Ok(Response::new(CreateResponse {}))

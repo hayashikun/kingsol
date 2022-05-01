@@ -28,6 +28,6 @@ message ListResponse {
 
 message CreateRequest {
   Link link = 1;
-  bool override = 2;
+  bool overwrite = 2;
 }
 message CreateResponse {}
