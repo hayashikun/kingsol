@@ -14,10 +14,10 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let api = KingsolApiServer::new(api);
     let api = tonic_web::config()
-        .allow_origins(vec!["127.0.0.1"])
+        .allow_all_origins()
         .enable(api);
 
-    println!("GreeterServer listening on {}", addr);
+    println!("Server listening on {}", addr);
 
     Server::builder()
         .accept_http1(true)
