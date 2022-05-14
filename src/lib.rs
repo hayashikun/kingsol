@@ -4,3 +4,4 @@ pub mod web;
 pub mod grpc;
 pub mod redis;
 pub mod kingsol_api;
+mod entity;
