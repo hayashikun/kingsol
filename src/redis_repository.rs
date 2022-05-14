@@ -6,7 +6,7 @@ use crate::repository::{Repository, RepositoryError};
 
 pub const LINK_KEY_PREFIX: &str = "link:";
 
-struct RedisRepository {
+pub struct RedisRepository {
     conn: PooledConnection<Client>,
 }
 

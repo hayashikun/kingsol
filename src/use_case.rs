@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fmt::{Display, Formatter, Result as FormatResult};
 
 use crate::entity::Link;
+use crate::repository::RepositoryError;
 
 #[derive(Debug, PartialEq)]
 pub enum AppError {
@@ -10,6 +11,7 @@ pub enum AppError {
     NotFound(String),
     AlreadyExists(String),
     InvalidArgument(String),
+    Internal(String),
 }
 
 impl Error for AppError {}
@@ -19,6 +21,18 @@ impl Display for AppError {
         write!(f, "{}", self)
     }
 }
+
+impl From<RepositoryError> for AppError {
+    fn from(e: RepositoryError) -> Self {
+        match e {
+            RepositoryError::NotFound(s) => AppError::NotFound(s),
+            RepositoryError::AlreadyExists(s) => AppError::AlreadyExists(s),
+            RepositoryError::InvalidArgument(s) => AppError::InvalidArgument(s),
+            _ => AppError::Internal(e.to_string()),
+        }
+    }
+}
+
 
 pub struct GetLinkInput {
     pub key: String,
@@ -43,7 +57,7 @@ pub trait ListLinksUseCase {
 }
 
 pub struct CreateLinkInput {
-    pub link: Link
+    pub link: Link,
 }
 
 pub struct CreateLinkOutput {}

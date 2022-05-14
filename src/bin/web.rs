@@ -2,7 +2,7 @@ use actix_web::{App, HttpServer, web};
 use anyhow::{Context, Result};
 
 use kingsol::redis::create_connection_pool;
-use kingsol::web::link_handler;
+use kingsol::web_controller::link_handler;
 
 #[actix_web::main]
 pub async fn main() -> Result<()> {

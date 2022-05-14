@@ -1,6 +1,6 @@
 extern crate actix_web;
 
-pub mod web;
+pub mod web_controller;
 pub mod grpc;
 pub mod redis;
 pub mod kingsol_api;

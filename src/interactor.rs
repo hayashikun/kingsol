@@ -1,18 +1,24 @@
 use crate::repository::Repository;
 use crate::use_case::{*};
 
-struct GetLink {
-    repository: dyn Repository,
+pub struct GetLink<R: Repository> {
+    repository: R,
 }
 
-impl GetLinkUseCase for GetLink {
+impl<R: Repository> GetLink<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+}
+
+impl<R: Repository> GetLinkUseCase for GetLink<R> {
     fn handle(&mut self, input: GetLinkInput) -> Result<GetLinkOutput, AppError> {
         let link = self.repository.get_link(input.key)?;
         Ok(GetLinkOutput { link })
     }
 }
 
-struct ListLinks {
+pub struct ListLinks {
     repository: dyn Repository,
 }
 
@@ -23,7 +29,7 @@ impl ListLinksUseCase for ListLinks {
     }
 }
 
-struct CreateLink {
+pub struct CreateLink {
     repository: dyn Repository,
 }
 
