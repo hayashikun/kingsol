@@ -22,6 +22,6 @@ impl Display for RepositoryError {
 
 pub trait Repository {
     fn get_link(&mut self, key: String) -> Result<Link, RepositoryError>;
-    fn get_links(&mut self) -> Result<Vec<Link>, RepositoryError>;
+    fn list_links(&mut self) -> Result<Vec<Link>, RepositoryError>;
     fn create_link(&mut self, link: Link) -> Result<(), RepositoryError>;
 }

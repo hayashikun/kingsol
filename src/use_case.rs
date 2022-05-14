@@ -20,34 +20,34 @@ impl Display for AppError {
     }
 }
 
-struct GetLinkInput {
+pub struct GetLinkInput {
     pub key: String,
 }
 
-struct GetLinkOutput {
+pub struct GetLinkOutput {
     pub link: Link,
 }
 
-trait GetLinkUseCase {
-    fn handle(request: GetLinkInput) -> Result<GetLinkOutput, AppError>;
+pub trait GetLinkUseCase {
+    fn handle(&mut self, input: GetLinkInput) -> Result<GetLinkOutput, AppError>;
 }
 
-struct ListLinksInput {}
+pub struct ListLinksInput {}
 
-struct ListLinksOutput {
+pub struct ListLinksOutput {
     pub links: Vec<Link>,
 }
 
-trait ListLinksUseCase {
-    fn handle(request: ListLinksInput) -> Result<ListLinksOutput, AppError>;
+pub trait ListLinksUseCase {
+    fn handle(&mut self, input: ListLinksInput) -> Result<ListLinksOutput, AppError>;
 }
 
-struct CreateLinkInput {}
-
-struct CreateLinkOutput {
-    pub links: Vec<Link>,
+pub struct CreateLinkInput {
+    pub link: Link
 }
 
-trait CreateLinkUseCase {
-    fn handle(request: CreateLinkInput) -> Result<CreateLinkOutput, AppError>;
+pub struct CreateLinkOutput {}
+
+pub trait CreateLinkUseCase {
+    fn handle(&mut self, input: CreateLinkInput) -> Result<CreateLinkOutput, AppError>;
 }

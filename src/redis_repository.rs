@@ -40,7 +40,7 @@ impl Repository for RedisRepository {
         }
     }
 
-    fn get_links(&mut self) -> Result<Vec<Link>, RepositoryError> {
+    fn list_links(&mut self) -> Result<Vec<Link>, RepositoryError> {
         let keys_wp: Vec<String> = self.conn.keys(format!("{}*", LINK_KEY_PREFIX))?;
         let mut links = Vec::new();
         for k in keys_wp.iter() {
