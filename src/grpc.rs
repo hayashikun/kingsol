@@ -4,7 +4,7 @@ use tonic::{Request, Response, Status};
 
 use crate::kingsol_api::{CreateRequest, CreateResponse, GetRequest, GetResponse, Link, ListRequest, ListResponse};
 use crate::kingsol_api::kingsol_api_server::KingsolApi;
-use crate::redis::{get_connection, LINK_KEY_PREFIX};
+use crate::redis_repository::LINK_KEY_PREFIX;
 
 pub struct API {
     pub redis_pool: Pool<Client>,
@@ -15,7 +15,7 @@ impl KingsolApi for API {
     async fn get(&self, request: Request<GetRequest>) -> Result<Response<GetResponse>, Status> {
         let key = request.into_inner().key;
 
-        let mut conn = get_connection(&self.redis_pool)
+        let mut conn = self.redis_pool.get()
             .map_err(|e| Status::internal(e.to_string()))?;
         let uri: Option<String> = conn.get(format!("{}:{}", LINK_KEY_PREFIX, key))
             .map_err(|e| Status::internal(e.to_string()))?;
@@ -30,7 +30,7 @@ impl KingsolApi for API {
     }
 
     async fn list(&self, _request: Request<ListRequest>) -> Result<Response<ListResponse>, Status> {
-        let mut conn = get_connection(&self.redis_pool)
+        let mut conn = self.redis_pool.get()
             .map_err(|e| Status::internal(e.to_string()))?;
         let keys: Vec<String> = conn.keys(format!("{}:*", LINK_KEY_PREFIX))
             .map_err(|e| Status::internal(e.to_string()))?;
@@ -49,7 +49,7 @@ impl KingsolApi for API {
         if link.key.is_empty() || link.uri.is_empty() {
             return Err(Status::invalid_argument("empty key or uri"));
         }
-        let mut conn = get_connection(&self.redis_pool)
+        let mut conn = self.redis_pool.get()
             .map_err(|e| Status::internal(e.to_string()))?;
         if !overwrite {
             let exists = conn.exists(format!("{}:{}", LINK_KEY_PREFIX, link.key))

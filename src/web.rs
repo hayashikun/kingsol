@@ -3,11 +3,10 @@ use actix_web::http::header;
 use anyhow::Result;
 use r2d2::Pool;
 use redis::{Client, Commands};
-
-use crate::redis::{get_connection, LINK_KEY_PREFIX};
+use crate::redis_repository::LINK_KEY_PREFIX;
 
 fn do_link(req: HttpRequest, pool: web::Data<Pool<Client>>) -> Result<HttpResponse> {
-    let mut conn = get_connection(&pool)?;
+    let mut conn = pool.get()?;
     let key = &req.path()[1..];
     let loc: Option<String> = conn.get(format!("{}:{}", LINK_KEY_PREFIX, key))?;
     if let Some(loc) = loc {
