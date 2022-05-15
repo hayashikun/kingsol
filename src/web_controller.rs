@@ -25,6 +25,7 @@ pub async fn link_handler(req: HttpRequest, pool: web::Data<Pool<Client>>) -> Ht
     if let Err(e) = output {
         return match e {
             AppError::NotFound(_) => HttpResponse::NotFound().finish(),
+            AppError::ValidationError(_) => HttpResponse::NotFound().finish(),
             _ => HttpResponse::InternalServerError().finish()
         };
     }
