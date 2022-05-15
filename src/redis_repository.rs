@@ -55,10 +55,15 @@ impl Repository for RedisRepository {
         Ok(links)
     }
 
-    fn create_link(&mut self, link: Link) -> Result<(), RepositoryError> {
+    fn insert_link(&mut self, link: Link) -> Result<(), RepositoryError> {
         if self.conn.exists(format!("{}{}", LINK_KEY_PREFIX, link.key))? {
             return Err(RepositoryError::AlreadyExists(format!("{} already exists", link.key)));
         }
+        self.conn.set(format!("{}{}", LINK_KEY_PREFIX, link.key), link.uri)?;
+        Ok(())
+    }
+
+    fn upsert_link(&mut self, link: Link) -> Result<(), RepositoryError> {
         self.conn.set(format!("{}{}", LINK_KEY_PREFIX, link.key), link.uri)?;
         Ok(())
     }

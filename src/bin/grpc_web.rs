@@ -1,6 +1,6 @@
 use tonic::transport::Server;
 
-use kingsol::grpc::API;
+use kingsol::grpc_controller::API;
 use kingsol::kingsol_api::kingsol_api_server::KingsolApiServer;
 use kingsol::redis::create_connection_pool;
 

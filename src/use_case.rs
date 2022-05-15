@@ -38,6 +38,15 @@ pub struct GetLinkInput {
     pub key: String,
 }
 
+impl GetLinkInput {
+    pub fn validate(&self) -> Result<(), AppError> {
+        if self.key == "" {
+            return Err(AppError::ValidationError("empty key".to_string()));
+        }
+        Ok(())
+    }
+}
+
 pub struct GetLinkOutput {
     pub link: Link,
 }
@@ -48,6 +57,12 @@ pub trait GetLinkUseCase {
 
 pub struct ListLinksInput {}
 
+impl ListLinksInput {
+    pub fn validate(&self) -> Result<(), AppError> {
+        Ok(())
+    }
+}
+
 pub struct ListLinksOutput {
     pub links: Vec<Link>,
 }
@@ -57,7 +72,20 @@ pub trait ListLinksUseCase {
 }
 
 pub struct CreateLinkInput {
+    pub overwrite: bool,
     pub link: Link,
+}
+
+impl CreateLinkInput {
+    pub fn validate(&self) -> Result<(), AppError> {
+        if self.link.key == "" {
+            return Err(AppError::ValidationError("empty key".to_string()));
+        }
+        if self.link.uri == "" {
+            return Err(AppError::ValidationError("empty uri".to_string()));
+        }
+        Ok(())
+    }
 }
 
 pub struct CreateLinkOutput {}

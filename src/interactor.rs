@@ -1,6 +1,7 @@
 use crate::repository::Repository;
 use crate::use_case::{*};
 
+// GetLink
 pub struct GetLink<R: Repository> {
     repository: R,
 }
@@ -13,29 +14,50 @@ impl<R: Repository> GetLink<R> {
 
 impl<R: Repository> GetLinkUseCase for GetLink<R> {
     fn handle(&mut self, input: GetLinkInput) -> Result<GetLinkOutput, AppError> {
+        input.validate()?;
         let link = self.repository.get_link(input.key)?;
         Ok(GetLinkOutput { link })
     }
 }
 
-pub struct ListLinks {
-    repository: dyn Repository,
+// ListLinks
+pub struct ListLinks<R: Repository> {
+    repository: R,
 }
 
-impl ListLinksUseCase for ListLinks {
-    fn handle(&mut self, _input: ListLinksInput) -> Result<ListLinksOutput, AppError> {
+impl<R: Repository> ListLinks<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+}
+
+impl<R: Repository> ListLinksUseCase for ListLinks<R> {
+    fn handle(&mut self, input: ListLinksInput) -> Result<ListLinksOutput, AppError> {
+        input.validate()?;
         let links = self.repository.list_links()?;
         Ok(ListLinksOutput { links })
     }
 }
 
-pub struct CreateLink {
-    repository: dyn Repository,
+// CreateLink
+pub struct CreateLink<R: Repository> {
+    repository: R,
 }
 
-impl CreateLinkUseCase for CreateLink {
+impl<R: Repository> CreateLink<R> {
+    pub fn new(repository: R) -> Self {
+        Self { repository }
+    }
+}
+
+impl<R: Repository> CreateLinkUseCase for CreateLink<R> {
     fn handle(&mut self, input: CreateLinkInput) -> Result<CreateLinkOutput, AppError> {
-        self.repository.create_link(input.link)?;
+        input.validate()?;
+        if input.overwrite {
+            self.repository.upsert_link(input.link)?;
+        } else {
+            self.repository.insert_link(input.link)?;
+        }
         Ok(CreateLinkOutput {})
     }
 }
