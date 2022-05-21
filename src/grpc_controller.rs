@@ -46,8 +46,8 @@ impl From<Link> for entity::Link {
 #[tonic::async_trait]
 impl KingsolApi for API {
     async fn get(&self, request: Request<GetRequest>) -> Result<Response<GetResponse>, Status> {
-        let repository = RedisRepository::new(&self.redis_pool)?;
-        let mut get_link = GetLink::new(repository);
+        let mut repository = RedisRepository::new(&self.redis_pool)?;
+        let mut get_link = GetLink::new(&mut repository);
         let input = GetLinkInput {
             key: request.into_inner().key
         };
@@ -59,8 +59,8 @@ impl KingsolApi for API {
     }
 
     async fn list(&self, _request: Request<ListRequest>) -> Result<Response<ListResponse>, Status> {
-        let repository = RedisRepository::new(&self.redis_pool)?;
-        let mut list_link = ListLinks::new(repository);
+        let mut repository = RedisRepository::new(&self.redis_pool)?;
+        let mut list_link = ListLinks::new(&mut repository);
         let output = list_link.handle(ListLinksInput {})?;
 
         Ok(Response::new(ListResponse {
@@ -69,8 +69,8 @@ impl KingsolApi for API {
     }
 
     async fn create(&self, request: Request<CreateRequest>) -> Result<Response<CreateResponse>, Status> {
-        let repository = RedisRepository::new(&self.redis_pool)?;
-        let mut create_link = CreateLink::new(repository);
+        let mut repository = RedisRepository::new(&self.redis_pool)?;
+        let mut create_link = CreateLink::new(&mut repository);
         let link = request.get_ref().link.as_ref().ok_or(Status::invalid_argument("empty link"))?;
         let input = CreateLinkInput {
             overwrite: request.get_ref().overwrite,

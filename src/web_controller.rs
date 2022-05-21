@@ -5,19 +5,16 @@ use redis::Client;
 
 use crate::interactor::GetLink;
 use crate::redis_repository::RedisRepository;
-use crate::repository::RepositoryError;
 use crate::use_case::{AppError, GetLinkInput, GetLinkUseCase};
 
 pub async fn link_handler(req: HttpRequest, pool: web::Data<Pool<Client>>) -> HttpResponse {
     let repository = RedisRepository::new(pool.get_ref());
-    if let Err(e) = repository {
-        return match e {
-            RepositoryError::NotFound(_) => HttpResponse::NotFound().finish(),
-            _ => HttpResponse::InternalServerError().finish()
-        };
+    if let Err(_) = repository {
+        return HttpResponse::InternalServerError().finish();
     }
+    let mut repository = repository.unwrap();
 
-    let mut get_link = GetLink::<RedisRepository>::new(repository.unwrap());
+    let mut get_link = GetLink::<RedisRepository>::new(&mut repository);
     let input = GetLinkInput {
         key: (&req.path()[1..]).to_string()
     };

@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::fmt::{Display, Formatter, Result as FormatResult};
 
-use crate::entity::Link;
+use crate::entity::{Link, Token};
 
 #[derive(Debug, PartialEq)]
 pub enum RepositoryError {
@@ -25,5 +25,5 @@ pub trait Repository {
     fn list_links(&mut self) -> Result<Vec<Link>, RepositoryError>;
     fn insert_link(&mut self, link: Link) -> Result<(), RepositoryError>;
     fn upsert_link(&mut self, link: Link) -> Result<(), RepositoryError>;
-    fn exist_token(&mut self, link: Link) -> Result<(), RepositoryError>;
+    fn exist_token(&mut self, token: Token) -> Result<bool, RepositoryError>;
 }
