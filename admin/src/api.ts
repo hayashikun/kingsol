@@ -4,10 +4,15 @@ import type grpcWeb from "grpc-web";
 
 export default class API {
     client: KingsolAPIClient;
-    metadata: grpcWeb.Metadata | null = null;
+    metadata: grpcWeb.Metadata;
 
     constructor(client: KingsolAPIClient) {
         this.client = client;
+        this.metadata = {};
+    }
+
+    setToken(token: string) {
+        this.metadata["token"] = token;
     }
 
     async list() {

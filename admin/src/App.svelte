@@ -12,6 +12,14 @@
     let uri = "";
     let overwrite = false;
     let links: [Link] = [];
+    let token = localStorage.getItem("token");
+
+    function setToken() {
+        localStorage.setItem("token", token);
+        api.setToken(token);
+    }
+
+    setToken()
 
     async function add() {
         try {
@@ -23,10 +31,15 @@
     }
 
     async function list() {
-        links = await api.list()
+        try {
+            links = await api.list()
+        } catch  (e: Error) {
+            errorMessage = e.toString();
+        }
     }
 
     list()
+
 </script>
 
 <main>
@@ -34,6 +47,14 @@
 
     <div class="message-container" class:error-visible={errorMessage != null}>
         {errorMessage}
+    </div>
+
+    <div class="token-container">
+        <label for="token-input">Token
+            <input id="token-input" type="text" bind:value={token}>
+        </label>
+
+        <button on:click={setToken}>Set</button>
     </div>
 
     <div class="create-link-container">
@@ -86,6 +107,29 @@
         color: red;
         background: #ffe0e2;
         display: block;
+    }
+
+    .token-container {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+
+    #token-input {
+        width: 200px;
+    }
+
+    .token-container label {
+        margin: auto 0;
+    }
+
+    .token-container input {
+        margin: 0 1.6em 0 0.4em;
+    }
+
+    .token-container button {
+        margin: auto 0;
     }
 
     .create-link-container {
