@@ -1,5 +1,5 @@
 use crate::repository::Repository;
-use crate::use_case::{*};
+use crate::use_case::*;
 
 // GetLink
 pub struct GetLink<'a, R: Repository> {

@@ -25,7 +25,8 @@ impl From<RedisError> for RepositoryError {
 
 impl RedisRepository {
     pub fn new(redis_pool: &Pool<Client>) -> Result<Self, RepositoryError> {
-        let conn = redis_pool.get()
+        let conn = redis_pool
+            .get()
             .map_err(|e| RepositoryError::FailedToInitialize(e.to_string()))?;
         Ok(Self { conn })
     }
@@ -57,15 +58,23 @@ impl Repository for RedisRepository {
     }
 
     fn insert_link(&mut self, link: Link) -> Result<(), RepositoryError> {
-        if self.conn.exists(format!("{}{}", LINK_KEY_PREFIX, link.key))? {
-            return Err(RepositoryError::AlreadyExists(format!("{} already exists", link.key)));
+        if self
+            .conn
+            .exists(format!("{}{}", LINK_KEY_PREFIX, link.key))?
+        {
+            return Err(RepositoryError::AlreadyExists(format!(
+                "{} already exists",
+                link.key
+            )));
         }
-        self.conn.set(format!("{}{}", LINK_KEY_PREFIX, link.key), link.uri)?;
+        self.conn
+            .set(format!("{}{}", LINK_KEY_PREFIX, link.key), link.uri)?;
         Ok(())
     }
 
     fn upsert_link(&mut self, link: Link) -> Result<(), RepositoryError> {
-        self.conn.set(format!("{}{}", LINK_KEY_PREFIX, link.key), link.uri)?;
+        self.conn
+            .set(format!("{}{}", LINK_KEY_PREFIX, link.key), link.uri)?;
         Ok(())
     }
 

@@ -33,7 +33,6 @@ impl From<RepositoryError> for AppError {
     }
 }
 
-
 pub struct GetLinkInput {
     pub key: String,
 }

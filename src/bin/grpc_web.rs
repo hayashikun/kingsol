@@ -11,9 +11,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "0.0.0.0:8081".parse().unwrap();
     let api = GrpcApi::new(redis_pool);
     let api = KingsolApiServer::new(api);
-    let api = tonic_web::config()
-        .allow_all_origins()
-        .enable(api);
+    let api = tonic_web::config().allow_all_origins().enable(api);
 
     println!("Server listening on {}", addr);
 
