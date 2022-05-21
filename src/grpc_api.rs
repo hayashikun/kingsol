@@ -10,10 +10,6 @@ use crate::redis_repository::RedisRepository;
 use crate::repository::RepositoryError;
 use crate::use_case::{AppError, CreateLinkInput, CreateLinkUseCase, GetLinkInput, GetLinkUseCase, ListLinksInput, ListLinksUseCase};
 
-pub struct API {
-    pub redis_pool: Pool<Client>,
-}
-
 impl From<RepositoryError> for Status {
     fn from(e: RepositoryError) -> Self {
         Status::internal(e.to_string())
@@ -43,8 +39,18 @@ impl From<Link> for entity::Link {
     }
 }
 
+pub struct GrpcApi {
+    redis_pool: Pool<Client>,
+}
+
+impl GrpcApi {
+    pub fn new(redis_pool: Pool<Client>) -> Self {
+        Self { redis_pool }
+    }
+}
+
 #[tonic::async_trait]
-impl KingsolApi for API {
+impl KingsolApi for GrpcApi {
     async fn get(&self, request: Request<GetRequest>) -> Result<Response<GetResponse>, Status> {
         let mut repository = RedisRepository::new(&self.redis_pool)?;
         let mut get_link = GetLink::new(&mut repository);
