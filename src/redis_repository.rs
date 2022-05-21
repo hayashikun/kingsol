@@ -1,10 +1,11 @@
 use r2d2::{Error, Pool, PooledConnection};
 use redis::{Client, Commands, RedisError};
 
-use crate::entity::Link;
+use crate::entity::{Link, Token};
 use crate::repository::{Repository, RepositoryError};
 
 pub const LINK_KEY_PREFIX: &str = "link:";
+pub const TOKEN_KEY: &str = "token";
 
 pub struct RedisRepository {
     conn: PooledConnection<Client>,
@@ -66,5 +67,10 @@ impl Repository for RedisRepository {
     fn upsert_link(&mut self, link: Link) -> Result<(), RepositoryError> {
         self.conn.set(format!("{}{}", LINK_KEY_PREFIX, link.key), link.uri)?;
         Ok(())
+    }
+
+    fn exist_token(&mut self, token: Token) -> Result<bool, RepositoryError> {
+        let result = self.conn.sismember(TOKEN_KEY, token)?;
+        Ok(result)
     }
 }

@@ -25,4 +25,5 @@ pub trait Repository {
     fn list_links(&mut self) -> Result<Vec<Link>, RepositoryError>;
     fn insert_link(&mut self, link: Link) -> Result<(), RepositoryError>;
     fn upsert_link(&mut self, link: Link) -> Result<(), RepositoryError>;
+    fn exist_token(&mut self, link: Link) -> Result<(), RepositoryError>;
 }
