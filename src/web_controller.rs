@@ -12,11 +12,11 @@ impl<U: GetLinkUseCase> LinkController<U> {
         Self { get_link }
     }
 
-    pub fn handle(&mut self, req: HttpRequest) -> HttpResponse {
+    pub async fn handle(&mut self, req: HttpRequest) -> HttpResponse {
         let input = GetLinkInput {
             key: (&req.path()[1..]).to_string(),
         };
-        let output = self.get_link.handle(input);
+        let output = self.get_link.handle(input).await;
 
         if let Err(e) = output {
             return match e {

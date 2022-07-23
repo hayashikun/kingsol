@@ -4,23 +4,39 @@ services:
     build: .
     ports:
       - "8080:8080"
+    environment:
+      - MYSQL_URL=mysql://root:@mysql:3306/kingsol_dev
+      - WEB_PORT=8080
     volumes:
-      - ".:/app"
+      - .:/app
     links:
-      - redis
-    command: [ "modd", "-f", "modd-web.conf" ]
+      - mysql
+    command: cargo watch -x 'run --bin web --target-dir /tmp/target-web'
   grpc-web:
     build: .
     ports:
       - "8081:8081"
+    environment:
+      - MYSQL_URL=mysql://root:@mysql:3306/kingsol_dev
+      - GRPC_PORT=8081
     volumes:
-      - ".:/app"
+      - .:/app
     links:
-      - redis
-    command: [ "modd", "-f", "modd-grpc-web.conf" ]
-  redis:
-    image: "redis:alpine"
+      - mysql
+    command: cargo watch -x 'run --bin grpc-web --target-dir /tmp/target-grpc-web'
+  mysql:
+    image: mysql:latest
+    command:
+      - --general-log=true
+      - --general-log-file=/tmp/mysql.log
     volumes:
-      - "./data:/data"
+      - mysql_volume:/var/lib/mysql
+      - ./:/data
     ports:
-      - "6379:6379"
+      - "3306:3306"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    platform: linux/x86_64
+
+volumes:
+  mysql_volume:

@@ -1,22 +1,32 @@
 WEB_IMAGE_NAME ?= ghcr.io/hayashikun/kingsol-web
 GRPC_WEB_IMAGE_NAME ?= ghcr.io/hayashikun/kingsol-grpc-web
 
-up/all: up/web up/grpc-web
+up:
+	docker-compose up
 
+down:
+	docker-compose down
 
-up/web: build/web push/web
+push/all: push/grpc-web push/web
 
 build/web:
 	docker build -t $(WEB_IMAGE_NAME) -f docker/web/Dockerfile .
 
-push/web:
+push/web: build/web
 	docker push $(WEB_IMAGE_NAME)
-
-
-up/grpc-web: build/grpc-web push/grpc-web
 
 build/grpc-web:
 	docker build -t $(GRPC_WEB_IMAGE_NAME) -f docker/grpc-web/Dockerfile .
 
-push/grpc-web:
+push/grpc-web: build/web
 	docker push $(GRPC_WEB_IMAGE_NAME)
+
+skeema/push:
+	docker-compose exec web sh -c 'cd mysql && skeema push dev --allow-unsafe'
+
+skeema/lint:
+	docker-compose exec web sh -c 'cd mysql && skeema lint dev'
+
+.PHONY: mysql
+mysql:
+	docker-compose exec mysql mysql -u root

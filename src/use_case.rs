@@ -1,12 +1,13 @@
 use std::error::Error;
 use std::fmt::{Display, Formatter, Result as FormatResult};
 
+use async_trait::async_trait;
+
 use crate::entity::Link;
 use crate::repository::RepositoryError;
 
 #[derive(Debug, PartialEq)]
 pub enum AppError {
-    RepositoryError(String),
     ValidationError(String),
     NotFound(String),
     AlreadyExists(String),
@@ -18,7 +19,13 @@ impl Error for AppError {}
 
 impl Display for AppError {
     fn fmt(&self, f: &mut Formatter<'_>) -> FormatResult {
-        write!(f, "{}", self)
+        match self {
+            AppError::ValidationError(s) => write!(f, "ValidationError {}", s),
+            AppError::NotFound(s) => write!(f, "NotFound {}", s),
+            AppError::AlreadyExists(s) => write!(f, "AlreadyExists {}", s),
+            AppError::InvalidArgument(s) => write!(f, "InvalidArgument {}", s),
+            AppError::Internal(s) => write!(f, "Internal {}", s),
+        }
     }
 }
 
@@ -50,8 +57,9 @@ pub struct GetLinkOutput {
     pub link: Link,
 }
 
+#[async_trait]
 pub trait GetLinkUseCase {
-    fn handle(&mut self, input: GetLinkInput) -> Result<GetLinkOutput, AppError>;
+    async fn handle(&self, input: GetLinkInput) -> Result<GetLinkOutput, AppError>;
 }
 
 pub struct ListLinksInput {}
@@ -66,8 +74,9 @@ pub struct ListLinksOutput {
     pub links: Vec<Link>,
 }
 
+#[async_trait]
 pub trait ListLinksUseCase {
-    fn handle(&mut self, input: ListLinksInput) -> Result<ListLinksOutput, AppError>;
+    async fn handle(&self, input: ListLinksInput) -> Result<ListLinksOutput, AppError>;
 }
 
 pub struct CreateLinkInput {
@@ -89,6 +98,7 @@ impl CreateLinkInput {
 
 pub struct CreateLinkOutput {}
 
+#[async_trait]
 pub trait CreateLinkUseCase {
-    fn handle(&mut self, input: CreateLinkInput) -> Result<CreateLinkOutput, AppError>;
+    async fn handle(&self, input: CreateLinkInput) -> Result<CreateLinkOutput, AppError>;
 }

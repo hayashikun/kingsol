@@ -1,0 +1,14 @@
+default-character-set=utf8mb4
+default-collation=utf8mb4_general_ci
+
+[dev]
+flavor=mysql:5.7
+host=mysql
+port=3306
+schema=kingsol_dev
+
+[prd]
+flavor=mysql:5.7
+host=mysql
+port=3306
+schema=kingsol
