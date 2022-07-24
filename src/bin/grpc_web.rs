@@ -21,7 +21,7 @@ async fn _main() -> Result<(), Box<dyn Error>> {
         .connect(mysql_url.as_str())
         .await?;
 
-    let port: u16 = env::var("GRPC_PORT")?.parse()?;
+    let port: u16 = env::var("GRPC_WEB_PORT")?.parse()?;
     let addr = format!("0.0.0.0:{}", port).parse()?;
     let api = GrpcApi::new(pool);
     let server = KingsolApiServer::new(api);
