@@ -18,7 +18,7 @@ push/web: build/web
 build/grpc-web:
 	docker build -t $(GRPC_WEB_IMAGE_NAME) -f docker/grpc-web/Dockerfile .
 
-push/grpc-web: build/web
+push/grpc-web: build/grpc-web
 	docker push $(GRPC_WEB_IMAGE_NAME)
 
 skeema/push:
